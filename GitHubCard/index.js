@@ -3,11 +3,11 @@
            https://api.github.com/users/<your name>
 */
   const cardContainer = document.querySelector('.cards');
-  // axios.get("https://api.github.com/users/grifmang")
-  //   .then( (response) => {
-  //     //console.log(response);
-  //     cardContainer.appendChild(createCard(response));
-  //   })
+  axios.get("https://api.github.com/users/grifmang")
+    .then( (response) => {
+      //console.log(response);
+      cardContainer.appendChild(createCard(response));
+    })
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
@@ -30,24 +30,42 @@
 */
 
 const followersArray = [];
-const big = axios.get("https://api.github.com/users/grifmang/followers")
-    .then( (response) => {
-      //console.log(response); //Array of follower objects
-      Object.values(response.data).forEach( (element) => {
-        followersArray.push(element.login);
-      })
+axios
+    .get('https://api.github.com/users/grifmang')
+    .then(res => {
+        createCard(res);
+        axios
+            .get('https://api.github.com/users/grifmang/followers')
+            .then(response => {
+                response.data.forEach(follower => {
+                    axios
+                        .get(`https://api.github.com/users/${follower.login}`)
+                        .then(followerRes => cardContainer.appendChild(createCard(followerRes)));
+                });
+            });
     })
+    //.catch(error => console.log(error.res.data.message));
+// axios.get("https://api.github.com/users/grifmang/followers")
+//      .then( (response) => {
+//       //console.log(response); //Array of follower objects
+      
+//     })
+//     .catch(error => console.log(error.response.data.message));
 //console.log(followersArray);
 
 
 // This is what doesn't run
-followersArray.forEach( (login) => {
-  const userData = axios.get(`https://api.github.com/users/${login}`)
-  .then ( () => {
-    cardContainer.appendChild(createCard(userData));
-  })
-  //console.log(login);
-})
+// Object.values(response.data).forEach( (element) => {
+//   followersArray.push(element.login);
+// })
+// followersArray.forEach( (login) => {
+//   const userData = axios.get(`https://api.github.com/users/${login}`)
+//   .then ( (stuff) => {
+//     cardContainer.appendChild(createCard(userData));
+//   })
+//   .catch(error => console.log(error.stuff.data.message));
+//   //console.log(login);
+// })
 
 
 
