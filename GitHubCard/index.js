@@ -39,6 +39,8 @@ const big = axios.get("https://api.github.com/users/grifmang/followers")
     })
 //console.log(followersArray);
 
+
+// This is what doesn't run
 followersArray.forEach( (login) => {
   const userData = axios.get(`https://api.github.com/users/${login}`)
   .then ( () => {
